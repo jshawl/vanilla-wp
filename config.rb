@@ -19,8 +19,12 @@ relative_assets = true
 line_comments = false
 
 
-# If you prefer the indented syntax, you might want to regenerate this
-# project again passing --syntax sass, or you can uncomment this:
-# preferred_syntax = :sass
-# and then run:
-# sass-convert -R --from scss --to sass sass scss && rm -rf sass && mv scss sass
+require 'autoprefixer-rails'
+require 'csso'
+
+on_stylesheet_saved do |file|
+  css = File.read(file)
+  File.open(file, 'w') do |io|
+    io << Csso.optimize( AutoprefixerRails.compile(css) )
+  end
+end
